@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using TheWorld.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.PlatformAbstractions;
+using TheWorld.Models;
 
 namespace TheWorld
 {
@@ -27,11 +28,19 @@ namespace TheWorld
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+
+            services.AddEntityFramework()
+                .AddSqlServer()
+                .AddDbContext<WorldContext>();
+
+            // this could use macro if's to use a mock or real service
             services.AddScoped<IMailService, MockMailService>();
+
+            services.AddTransient<WorldContextSeedData>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app)
+        public void Configure(IApplicationBuilder app, WorldContextSeedData seeder)
         {
             //app.UseDefaultFiles();
             app.UseStaticFiles();
@@ -42,6 +51,7 @@ namespace TheWorld
                     template: "{controller=App}/{action=Index}/{id?}");
             });
 
+            seeder.EnsureSeedData();
         }
 
         // Entry point for the application.
