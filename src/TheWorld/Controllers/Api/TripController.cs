@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
+﻿using System.Net;
 using Microsoft.AspNet.Mvc;
 using TheWorld.Models;
 using TheWorld.ViewModels;
@@ -12,7 +8,7 @@ namespace TheWorld.Controllers.Api
     [Route("api/trips")]
     public class TripController : Controller
     {
-        private IWorldRepository _repository;
+        private readonly IWorldRepository _repository;
 
         public TripController(IWorldRepository repository)
         {
@@ -38,7 +34,7 @@ namespace TheWorld.Controllers.Api
             return Json( new
             {
                 Message = "Failed",
-                ModelState = ModelState
+                ModelState
             });
         }
 
