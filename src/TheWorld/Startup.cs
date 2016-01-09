@@ -1,5 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using System.Xml;
+using AutoMapper;
 using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.PlatformAbstractions;
 using Newtonsoft.Json.Serialization;
 using TheWorld.Models;
+using TheWorld.ViewModels;
 
 namespace TheWorld
 {
@@ -53,8 +55,15 @@ namespace TheWorld
         {
             loggerFactory.AddDebug(LogLevel.Warning);
 
-            //app.UseDefaultFiles();
             app.UseStaticFiles();
+
+            //auto mapper configuration
+            Mapper.Initialize(config =>
+            {
+                config.CreateMap<Trip, TripViewModel>().ReverseMap();
+            });
+
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
