@@ -50,8 +50,27 @@ namespace TheWorld.Models
             }
 
             return tripsWithStops;
-        } 
+        }
 
+        public void AddTrip(Trip newTrip)
+        {
+            _context.Add(newTrip);
+        }
+
+        public bool SaveAll()
+        {
+            bool changesCommitted = _context.SaveChanges() > 0;
+            return changesCommitted;
+        }
+
+        public Trip GetTripByName(string tripName)
+        {
+            var tripWithStops =_context.Trips
+                .Include(t => t.Stops)
+                .FirstOrDefault(t => t.Name == tripName);
+
+            return tripWithStops;
+        }
     }
 
 }
