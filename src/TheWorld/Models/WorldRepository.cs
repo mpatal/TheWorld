@@ -71,6 +71,13 @@ namespace TheWorld.Models
 
             return tripWithStops;
         }
+
+        public void AddStop(string tripName, Stop stop)
+        {
+            var trip = GetTripByName(tripName);
+            stop.Order = trip.Stops.Max(s => s.Order) + 1;
+            _context.Stops.Add(stop);
+        }
     }
 
 }
