@@ -8,6 +8,7 @@ using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Mvc;
 using Microsoft.Extensions.Logging;
 using TheWorld.Models;
+using TheWorld.Services;
 using TheWorld.ViewModels;
 
 namespace TheWorld.Controllers.Api
@@ -17,11 +18,13 @@ namespace TheWorld.Controllers.Api
     {
         private IWorldRepository _repository;
         private ILogger<StopController> _logger;
+        private ICoordService _coordService;
 
-        public StopController(IWorldRepository repository, ILogger<StopController> logger)
+        public StopController(IWorldRepository repository, ILogger<StopController> logger, ICoordService coordService)
         {
             _repository = repository;
             _logger = logger;
+            _coordService = coordService;
         }
 
         [HttpGet("")]
@@ -51,7 +54,7 @@ namespace TheWorld.Controllers.Api
         }
 
         [HttpPost("")]
-        public JsonResult Post(string tripName, [FromBody]StopViewModel stopViewModel)
+        public async Task<JsonResult> Post(string tripName, [FromBody]StopViewModel stopViewModel)
         {
             try
             {
@@ -61,6 +64,16 @@ namespace TheWorld.Controllers.Api
                     var stop = Mapper.Map<Stop>(stopViewModel);
 
                     //look up geo coordinates
+                    var coordResult = await _coordService.Lookup(stop.Name);
+
+                    if (!coordResult.Success)
+                    {
+                        Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                        return Json(coordResult.Message);
+                    }
+
+                    stop.Latitude = coordResult.Latitude;
+                    stop.Longitude = coordResult.Longitude;
 
                     //save to the database
 

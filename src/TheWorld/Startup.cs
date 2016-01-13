@@ -43,6 +43,7 @@ namespace TheWorld
                 .AddSqlServer()
                 .AddDbContext<WorldContext>();
 
+            services.AddScoped<ICoordService, CoordService>();
             // this could use macro if's to use a mock or real service once per request
             services.AddScoped<IMailService, MockMailService>();
             services.AddScoped<IWorldRepository, WorldRepository>();
