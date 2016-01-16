@@ -76,6 +76,7 @@ namespace TheWorld.Models
         {
             var trip = GetTripByName(tripName);
             stop.Order = trip.Stops.Max(s => s.Order) + 1;
+            trip.Stops.Add(stop);
             _context.Stops.Add(stop);
         }
     }
