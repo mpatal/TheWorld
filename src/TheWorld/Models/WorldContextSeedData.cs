@@ -1,19 +1,44 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNet.Identity;
 
 namespace TheWorld.Models
 {
     public class WorldContextSeedData
     {
         private WorldContext _context;
+        private UserManager<WorldUser> _userManager;
+        private const string SeedEmail = "sam.hastings@theworld.com";
+        private const string SeedUser = "samhastings";
 
-        public WorldContextSeedData(WorldContext context)
+        public WorldContextSeedData(WorldContext context, UserManager<WorldUser> userManager )
         {
             _context = context;
+            _userManager = userManager;
         }
-        public void EnsureSeedData()
+
+        private async Task EnsureIdentitySeedAsync()
         {
+            var samHastingsEmail = SeedEmail;
+            if (await _userManager.FindByEmailAsync(samHastingsEmail) == null)
+            {
+                var newUser = new WorldUser()
+                {
+                    UserName = SeedUser,
+                    Email = SeedEmail
+                };
+
+                await _userManager.CreateAsync(newUser, "P@ssw0rd!");
+            }
+
+        }
+
+        public async Task EnsureSeedDataAsync()
+        {
+            await EnsureIdentitySeedAsync();
+
             if (!_context.Trips.Any())
             {
                 //add new data
@@ -21,7 +46,7 @@ namespace TheWorld.Models
                 {
                     Name = "US Trip",
                     Created = DateTime.UtcNow,
-                    UserName = "",
+                    UserName = SeedUser,
                     Stops = new List<Stop>
                     {
                         new Stop() {  Name = "Atlanta, GA", Arrival = new DateTime(2014, 6, 4), Latitude = 33.748995, Longitude = -84.387982, Order = 0 },
@@ -41,7 +66,7 @@ namespace TheWorld.Models
                 {
                     Name = "The World Trip",
                     Created = DateTime.UtcNow,
-                    UserName = "",
+                    UserName = SeedUser,
                     Stops = new List<Stop>
                     {
                         new Stop() { Order = 0, Latitude =  33.748995, Longitude =  -84.387982, Name = "Atlanta, Georgia", Arrival = DateTime.Parse("Jun 3, 2014") },
