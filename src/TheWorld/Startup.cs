@@ -29,6 +29,7 @@ namespace TheWorld
                 .AddJsonFile("config.json")
                 .AddEnvironmentVariables();
 
+
             Configuration = builder.Build();
         }
 
