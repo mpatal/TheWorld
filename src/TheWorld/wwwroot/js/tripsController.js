@@ -1,16 +1,18 @@
 ﻿(function () {
     "use strict";
 
-    //Getting the eisting module and adding a controller
+    //Getting the existing module and adding a controller
     angular.module("app-trips")
         .controller("tripsController", tripsController);
 
     function tripsController($http) {
+        //#region [tripController members]
         var vm = this;
         vm.trips = [];
         vm.newTrip = {};
         vm.errorMessage = "";
         vm.isBusy = true;
+        //#endregion
 
         vm.loadTrips = function () {
             $http.get("/api/trips")
