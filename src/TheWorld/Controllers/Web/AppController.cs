@@ -28,7 +28,7 @@ namespace TheWorld.Controllers.Web
         {
             var trips = repository.GetAllTrips();
 
-            return View(trips);
+            return View();
         }
 
         public IActionResult About()
