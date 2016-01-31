@@ -10,7 +10,7 @@
     <script src="~/lib/angular/angular.min.js"></script>
     <script src="~/js/app-trips.js"></script>
     <script src="~/js/tripsController.js"></script>
-}
+} 
 
 <div class="row" ng-app="app-trips">
     <div ng-controller="tripsController as vm" class="col-md-6 col-md-offset-3">
@@ -21,6 +21,20 @@
                 <td> <a href="#" class="btn btn-sm btn-primary">Manage</a> </td>
             </tr>
         </table>
+
+        <form novalidate="" name="newTripForm" ng-submit="vm.addTrip()">
+            <div class="form-group">
+                <label for="name">Trip Name</label>
+                <input type="text" value="" class="form-control" id="name" name="name" ng-model="vm.newTrip.name" required ng-minlength="5"/>
+                <span ng-show="newTripForm.name.$error.required" class="text-warning">Name is required.</span>
+                <span class="text-warning" ng-show="newTripForm.name.$error.minlength">Must be at least 5 characters.</span>
+            </div>
+            <div class="form-group">
+                <label></label>
+                <input type="submit" value="Add" class="btn btn-success btn-sm" 
+                       ng-disabled="newTripForm.$invalid"/>
+            </div>
+        </form>
     </div>
     <div class="col-md-6">
         <h1>The World</h1>
