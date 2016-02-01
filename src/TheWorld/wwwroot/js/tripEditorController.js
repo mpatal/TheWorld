@@ -17,6 +17,15 @@
             .then(function(response) {
                     //success
                     angular.copy(response.data, vm.stops);
+                    var travelStops = _.map(vm.stops, function(item) {
+                        return {
+                            lat: item.latitude,
+                            long: item.longitude,
+                            info: item.name
+                        };
+                    });
+
+                    _showTravelMap(travelStops);
                 },
                 function(error) {
                     //failure
@@ -26,5 +35,19 @@
                 vm.isBusy = false;
             });
     };
+
+    function _showTravelMap(stops) {
+        
+        if (stops && stops.length > 0) {
+            //show map
+            travelMap.createMap({
+                stops: stops,
+                selector: "#map",
+                currentStop: 1,
+                initialZoom: 3
+
+            });
+        }
+    }
 
 })();
