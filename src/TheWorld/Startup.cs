@@ -40,7 +40,7 @@ namespace TheWorld
             services.AddMvc(config =>
             {
 #if !DEBUG
-                config.Filters.Add(new RequireHttpsAttribute());
+                //config.Filters.Add(new RequireHttpsAttribute());
 #endif
             })
             .AddJsonOptions(opt =>
@@ -88,10 +88,14 @@ namespace TheWorld
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public async void Configure(IApplicationBuilder app, WorldContextSeedData seeder, ILoggerFactory loggerFactory)
+        public async void Configure(IApplicationBuilder app, 
+            WorldContextSeedData seeder, 
+            ILoggerFactory loggerFactory,
+            IHostingEnvironment env)
         {
-            loggerFactory.AddDebug(LogLevel.Warning);
 
+            ConfigureHostingEnvironment(app, loggerFactory, env);
+            
             app.UseStaticFiles();
 
             app.UseIdentity();
@@ -112,6 +116,21 @@ namespace TheWorld
             });
 
             await seeder.EnsureSeedDataAsync();
+        }
+
+        private static void ConfigureHostingEnvironment(IApplicationBuilder app, ILoggerFactory loggerFactory,
+            IHostingEnvironment env)
+        {
+            if (env.IsDevelopment())
+            {
+                loggerFactory.AddDebug(LogLevel.Information);
+                app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                loggerFactory.AddDebug(LogLevel.Error);
+                app.UseExceptionHandler("/App/Error");
+            }
         }
 
         // Entry point for the application.
